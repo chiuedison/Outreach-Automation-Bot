@@ -24,7 +24,8 @@ class Connector:
     def getTiltifyData(self):
         '''Currently this method calls Tiltify API and prints out username of authenticated user'''
         url_user = 'https://tiltify.com/api/v3/user'
-        r = requests.get(url_user, auth=BearerAuth(os.getenv('TILTIFY_TOKEN')))
+        auth_class = BearerAuth(os.getenv('TILTIFY_TOKEN'))
+        r = requests.get(url_user, auth=auth_class)
         if r.status_code == requests.codes.ok:
             print('Succesful HTTP request to Tiltify API')
         else:
