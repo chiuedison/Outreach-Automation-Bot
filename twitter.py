@@ -22,19 +22,29 @@ class TwitterBot():
                               os.getenv('TWITTER_ACCESS_TOKEN_SECRET'))
         return tweepy.API(auth)
 
-    def send_dms(self):
-        ''' Sends a direct message to the user '''
-        # Get the user's ID
-        id = self.twitter_api.get_user(screen_name='@ninja').id
-        # Send the message
-        self.twitter_api.send_direct_message(id, 'Hello!')
-
     def create_airtable_api(self, base_id, table_name):
         ''' Creates and authenticates Airtable API'''
         # Airtable API credentials
         return Table(os.getenv('AIRTABLE_API_KEY'), base_id, table_name)
 
+    def send_dms(self):
+        ''' Sends a direct message to the user from AirTable'''
+        # Get all users from Airtable
+        users = self.airtable_api.all()
+        num_twitter_handles = 0
+        for user in users:
+            try:
+                # if (user['fields']['Ranking (0 - 4)'] != 0):
+                print(user['fields']['Twitter (if no email)'])
+                num_twitter_handles += 1
+            except KeyError:
+                print('No Twitter handle for ' +
+                      user['fields']['Streamer Name'])
+                continue
+        print('Number of Twitter handles: ' + str(num_twitter_handles))
+
 
 if __name__ == "__main__":
-    bot = TwitterBot(base_id="appI43QnVsnxN3yYQ", table_name="Streamers")
+    bot = TwitterBot(base_id="appI43QnVsnxN3yYQ",
+                     table_name="Streamers")
     bot.send_dms()
