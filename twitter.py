@@ -33,18 +33,15 @@ class TwitterBot():
         users = self.airtable_api.all()
         num_twitter_handles = 0
         for user in users:
-            try:
-                # if (user['fields']['Ranking (0 - 4)'] != 0):
-                print(user['fields']['Twitter (if no email)'])
+            if (user['fields']['Ranking (0 - 4)'] != 0 and user['fields']['Twitter Handle'][0] == '@'):
+                print(user['fields']['Twitter Handle'])
                 num_twitter_handles += 1
-            except KeyError:
-                print('No Twitter handle for ' +
-                      user['fields']['Streamer Name'])
-                continue
+            else:
+                print('No Twitter Handle or 0 Ranking')
         print('Number of Twitter handles: ' + str(num_twitter_handles))
 
 
 if __name__ == "__main__":
     bot = TwitterBot(base_id="appI43QnVsnxN3yYQ",
-                     table_name="Streamers")
+                     table_name="Twitch Top 400- Ranked & Scored")
     bot.send_dms()
