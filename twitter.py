@@ -7,11 +7,12 @@ from pyairtable import Table
 class TwitterBot():
     ''' A Twitter bot that sends a message to the user '''
 
-    def __init__(self, base_id, table_name):
+    def __init__(self, base_id, table_name, num_of_attempts):
         # Load environment variables
         load_dotenv()
         self.twitter_api = self.create_twitter_api()
         self.airtable_api = self.create_airtable_api(base_id, table_name)
+        self.num_of_attempts = num_of_attempts
 
     def create_twitter_api(self):
         ''' Creates and authenticates Twitter API'''
@@ -34,14 +35,21 @@ class TwitterBot():
         num_twitter_handles = 0
         for user in users:
             if (user['fields']['Ranking (0 - 4)'] != 0 and user['fields']['Twitter Handle'][0] == '@'):
-                print(user['fields']['Twitter Handle'])
-                num_twitter_handles += 1
+                if (user['fields']['# of attempts'] <= self.num_of_attempts):
+                    print(user['fields']['Twitter Handle'])
+                    num_twitter_handles += 1
             else:
                 print('No Twitter Handle or 0 Ranking')
         print('Number of Twitter handles: ' + str(num_twitter_handles))
 
 
-if __name__ == "__main__":
-    bot = TwitterBot(base_id="appI43QnVsnxN3yYQ",
-                     table_name="Twitch Top 400- Ranked & Scored")
+def main():
+    base_id = "appI43QnVsnxN3yYQ"
+    table_name = "Twitch Top 400- Ranked & Scored"
+    num_of_attempts = 4
+    bot = TwitterBot(base_id, table_name, num_of_attempts)
     bot.send_dms()
+
+
+if __name__ == "__main__":
+    main()
