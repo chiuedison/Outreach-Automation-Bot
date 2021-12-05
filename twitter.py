@@ -2,6 +2,8 @@ import os
 from dotenv import load_dotenv
 import tweepy
 from pyairtable import Table
+from time import sleep
+from datetime import date
 
 
 class TwitterBot():
@@ -28,19 +30,36 @@ class TwitterBot():
         # Airtable API credentials
         return Table(os.getenv('AIRTABLE_API_KEY'), base_id, table_name)
 
-    def send_dms(self):
-        ''' Sends a direct message to the user from AirTable'''
+    def send_dm(self, handle, message_number, user):
+        ''' Send a direct message to a user '''
+        print(handle)
+        profile = self.twitter_api.get_user(screen_name=handle)
+        message = 'Hello ' + handle + '! I am a bot that will send you a message every day.'
+        try:
+            self.twitter_api.send_direct_message(profile.id, message)
+            counter = user['fields']['# of attempts'] + 1
+            self.airtable_api.update(user['id'], {'# of attempts': counter})
+            self.airtable_api.update(user['id'], {'Twitter DM blocked?': 'No'})
+            self.airtable_api.update(user['id'], {'Last Twitter messages attempt': date.today().strftime(
+                "%m/%d/%y")})
+        except tweepy.errors.Forbidden:
+            self.airtable_api.update(
+                user['id'], {'Twitter DM blocked?': 'Yes'})
+
+    def run(self):
+        ''' Send messages to streamers on Twiiter '''
         # Get all users from Airtable
         users = self.airtable_api.all()
-        num_twitter_handles = 0
         for user in users:
             if (user['fields']['Ranking (0 - 4)'] != 0 and user['fields']['Twitter Handle'][0] == '@'):
-                if (user['fields']['# of attempts'] <= self.num_of_attempts):
-                    print(user['fields']['Twitter Handle'])
-                    num_twitter_handles += 1
-            else:
-                print('No Twitter Handle or 0 Ranking')
-        print('Number of Twitter handles: ' + str(num_twitter_handles))
+                if (user['fields']['# of attempts'] == 0):
+                    # send initial message
+                    pass
+                elif (user['fields']['# of attempts'] == 1):
+                    # send follow up message (second attempt)
+                    self.send_dm(
+                        user['fields']['Twitter Handle'], 0, user)
+                    sleep(5)
 
 
 def main():
@@ -48,7 +67,7 @@ def main():
     table_name = "Twitch Top 400- Ranked & Scored"
     num_of_attempts = 4
     bot = TwitterBot(base_id, table_name, num_of_attempts)
-    bot.send_dms()
+    bot.run()
 
 
 if __name__ == "__main__":
