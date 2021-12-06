@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 import tweepy
 from pyairtable import Table
-from datetime import date
+from datetime import date, datetime
 
 
 class TwitterBot():
@@ -41,12 +41,16 @@ class TwitterBot():
         if (user['fields']['Ranking (0 - 4)'] == 0 or user['fields']['Twitter Handle'][0] != '@'):
             return
         attempt_num = user['fields']['Number of attempts']
-        if (attempt_num >= params['Number of messages']):
+        if (attempt_num >= self.params['Number of messages']):
             # We already sent the max number of messages
             return
         if (attempt_num > 0):
             # Check the last date we sent a message
-            pass
+            date_today = datetime.today()
+            date_last_message = datetime.strptime(
+                user['fields']['Last Twitter messages attempt'], "%Y-%m-%d")
+            if ((date_today - date_last_message).days < self.params['Frequency of messages (in days)']):
+                return
         handle = user['fields']['Twitter Handle']
         profile = self.twitter_api.get_user(screen_name=handle)
         link = self.params['Link']
@@ -58,7 +62,7 @@ class TwitterBot():
             self.influencers_table.update(
                 user['id'], {'Twitter DM blocked?': 'No'})
             self.influencers_table.update(user['id'], {'Last Twitter messages attempt': date.today().strftime(
-                "%m/%d/%y")})
+                "%m/%d/%Y")})
         except tweepy.errors.Forbidden:
             self.influencers_table.update(
                 user['id'], {'Twitter DM blocked?': 'Yes'})
@@ -68,7 +72,8 @@ class TwitterBot():
         # Get all users from Airtable
         users = self.influencers_table.all()
         for user in users:
-            self.send_dm(user)
+            if (user['fields']['Twitter Handle'] == '@pashakhomchenko'):
+                self.send_dm(user)
 
 
 def main():
