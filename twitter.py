@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import tweepy
 from pyairtable import Table
 from datetime import date, datetime
+from time import sleep
 
 
 class TwitterBot():
@@ -37,7 +38,7 @@ class TwitterBot():
         return Table(os.getenv('AIRTABLE_API_KEY'), base_id, table_name).all()[0]['fields']
 
     def send_dm(self, user):
-        ''' Send a direct message to a user '''
+        ''' Checks all the condtions and then sends a direct message to a user '''
         if (user['fields']['Ranking (0 - 4)'] == 0 or user['fields']['Twitter Handle'][0] != '@'):
             return
 
@@ -93,6 +94,7 @@ class TwitterBot():
                 user['id'], {'Twitter DM blocked?': 'Yes'})
         self.influencers_table.update(
             user['id'], {'Errors': ''})
+        sleep(1)
 
     def run(self):
         ''' Send messages to streamers on Twiiter '''
