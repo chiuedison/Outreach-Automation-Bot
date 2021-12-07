@@ -104,11 +104,5 @@ class TwitterBot():
             if (user['fields']['Twitter Handle'] == '@pashakhomchenko'):
                 self.send_dm(user)
 
-
-def main():
-    bot = TwitterBot()
-    bot.run()
-
-
-if __name__ == "__main__":
-    main()
+bot = TwitterBot()
+bot.run()
