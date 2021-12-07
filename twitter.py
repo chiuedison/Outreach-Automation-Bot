@@ -53,7 +53,12 @@ class TwitterBot():
                 return
         handle = user['fields']['Twitter Handle']
         profile = self.twitter_api.get_user(screen_name=handle)
-        link = self.params['Link']
+        link = ''
+        try:
+            self.params['Add link?']
+            link = self.params['Link']
+        except KeyError:
+            pass
         message = self.params['Message #' + str(attempt_num + 1)]
         try:
             self.twitter_api.send_direct_message(profile.id, message + link)
