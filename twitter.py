@@ -40,6 +40,7 @@ class TwitterBot():
         ''' Send a direct message to a user '''
         if (user['fields']['Ranking (0 - 4)'] == 0 or user['fields']['Twitter Handle'][0] != '@'):
             return
+
         attempt_num = user['fields']['Number of attempts']
         if (attempt_num >= self.params['Number of messages']):
             # We already sent the max number of messages
@@ -51,15 +52,34 @@ class TwitterBot():
                 user['fields']['Last Twitter messages attempt'], "%Y-%m-%d")
             if ((date_today - date_last_message).days < self.params['Frequency of messages (in days)']):
                 return
+
         handle = user['fields']['Twitter Handle']
-        profile = self.twitter_api.get_user(screen_name=handle)
+        # Check if the handle is valid
+        try:
+            profile = self.twitter_api.get_user(screen_name=handle)
+        except tweepy.errors.NotFound:
+            self.influencers_table.update(
+                user['id'], {'Errors': 'Invalid handle'})
+            return
+
         link = ''
+        # Determine if we should add a link to the message
         try:
             self.params['Add link?']
             link = self.params['Link']
         except KeyError:
             pass
-        message = self.params['Message #' + str(attempt_num + 1)]
+
+        try:
+            message = self.params['Message #' + str(attempt_num + 1)]
+        except KeyError:
+            self.influencers_table.update(
+                user['id'], {'Errors': 'Invalid number of messages'})
+            return
+        # Insert name of the influencer into the message
+        if ('!name' in message):
+            message = message.replace('!name', user['fields']['Name'])
+
         try:
             self.twitter_api.send_direct_message(profile.id, message + link)
             self.influencers_table.update(
@@ -71,6 +91,8 @@ class TwitterBot():
         except tweepy.errors.Forbidden:
             self.influencers_table.update(
                 user['id'], {'Twitter DM blocked?': 'Yes'})
+        self.influencers_table.update(
+            user['id'], {'Errors': ''})
 
     def run(self):
         ''' Send messages to streamers on Twiiter '''
