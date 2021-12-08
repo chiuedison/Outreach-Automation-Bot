@@ -42,6 +42,14 @@ class TwitterBot():
         if (user['fields']['Ranking (0 - 4)'] == 0 or user['fields']['Twitter Handle'][0] != '@'):
             return
 
+        messages = self.twitter_api.get_direct_messages()
+        for message in messages:
+            print(message._json['message_create']['message_data']['text'])
+            if (message.text == 'Opt-out'):
+                self.influencers_table.update(user['id'], {'Opt-out': True})
+                return
+
+
         attempt_num = user['fields']['Number of attempts']
         if (attempt_num >= self.params['Number of messages']):
             # We already sent the max number of messages
@@ -53,6 +61,15 @@ class TwitterBot():
                 user['fields']['Last Twitter messages attempt'], "%Y-%m-%d")
             if ((date_today - date_last_message).days < self.params['Frequency of messages (in days)']):
                 return
+        
+        # Check if influencer has opted out
+        if (attempt_num > 0):
+            try:
+                if (user['fields']['Opt-out']):
+                    print("Opted out")
+                    return
+            except KeyError:
+                pass
 
         handle = user['fields']['Twitter Handle']
         # Check if the handle is valid
@@ -81,8 +98,19 @@ class TwitterBot():
         if ('!name' in message):
             message = message.replace('!name', user['fields']['Name'])
 
+        reply_options = [
+            {
+              "label": "Opt-out",
+              "description": "Choose this option if you want to stop receiving messages from GFL",
+            },
+            {
+              "label": "I want to learn more",
+              "description": "Choose this option to speak to a GFL representative",
+            },
+        ]
+
         try:
-            self.twitter_api.send_direct_message(profile.id, message + link)
+            self.twitter_api.send_direct_message(profile.id, message + link, quick_reply_options=reply_options)
             self.influencers_table.update(
                 user['id'], {'Number of attempts': attempt_num + 1})
             self.influencers_table.update(
