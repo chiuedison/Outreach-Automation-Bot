@@ -21,14 +21,18 @@ The ```Twitter Bot Parameters``` table, there are options to change the number o
 
 ## Code Overview
 
-### twitter.py
-Purpose: Send messages to streamers through twitter in mass
+### Key Features
+Lorem ipsum
 
-Takes data inputed to the airtable and uses information to deliver message
-### main.py
-Purpose: update the airtable after DM is sent
+### Files
+#### twitter.py
+The main python file to create and set-up the Twitter bot and connect data to Airtable.
 
-### Code Setup Requirements
+#### .secrets
+File containing API keys and token to enable accessing Twitter and Airtable services.
+
+#### requirements.txt
+Consolidated .txt document of all plugins/libraries required for the script to run efficiently.
 ```
 certifi==2021.10.8
 charset-normalizer==2.0.7
@@ -42,8 +46,12 @@ tweepy==4.3.0
 urllib3==1.26.7
 ```
 
-### POTENTIAL DIFFICULTIES/FUTURE STEPS
-#Users with DMs blocked will not receive messages
-#Hosting the service has limitations
-#There are opportunities to expand this bot to utilize other outreach platforms such as twitch and discord.
-#There are opportunities to expand the functionality of the twitter bot.
+## Running & Deploying the Script
+
+
+## Potential Difficulties/Future Steps
+ - Users with DMs blocked will not receive messages. However, this will be indicated in the Airtable and GFL can manually reach out or use another platform.
+ - The hosting service has time and/or usage limitations.
+ - There are opportunities to expand this bot to utilize other outreach platforms such as Twitch and Discord, using similar features and code structure.
+    - Refer to the Platform Overview Report for a more comprehensive summary.
+ - There are opportunities to expand the functionality of the Twitter bot, such as NLP to reply with tailored automated messages.
