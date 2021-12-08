@@ -10,11 +10,15 @@ The script depends on the name and format of the ```Twitch Top 400- Ranked & Sco
 Do NOT change the names and the format of the following fields:
 - Name
 - Twitter Handle (Twitter handle of streamer)
-- Ranking (compatibility ranking of 0-4) 
+- Ranking (compatibility ranking of 0-4, if 0, bot won’t send the message to this influencer) 
 - Twitter DM blocked? (whether the streamers DM’s are off)
 - Last Twitter message attempt (when the last message was sent to streamer)
-- Number of attempts (number of messages sent so far)
+- Number of attempts (number of messages sent so far, must have a value, 0 by default)
+- Expressed interested (checked if influencer expressed interest in partnering with GFL)
+- Opt-out (checked if influencer asked to stop sending messages to them)
 - Errors (any errors that occur when running system)
+- recipient_id (information needed for checking received messages)
+
 
 ### Modifying Outreach Messages
 The ```Twitter Bot Parameters``` table, there are options to change the number of messages to send, the frequency, and the content of each message itself. It is suggested to insert any new code parameters/variable into this specific table, to keep all parameters in one place.
@@ -26,10 +30,13 @@ Lorem ipsum
 
 ### Files
 #### twitter.py
-The main python file to create and set-up the Twitter bot and connect data to Airtable.
+The main python file to create and set-up the Twitter bot and connect data to Airtable. Contains definition and implementation of TwitterBot class. The most important method of this class is called send_dm. It is the place where the bulk of the work happens. send_dm checks all the conditions and parameters from Airtable and based on the logic implemented there sends a message to the influencer. If you want to change any behaviour, that's place to look at.
 
 #### .secrets
 File containing API keys and token to enable accessing Twitter and Airtable services.
+
+#### .env
+File containing environmental variables.
 
 #### requirements.txt
 Consolidated .txt document of all plugins/libraries required for the script to run efficiently.
@@ -47,6 +54,9 @@ urllib3==1.26.7
 ```
 
 ## Running & Deploying the Script
+
+### Local Development
+In order to run this code locally, clone this repository using ```git clone``` command, then create a virtual environment in the same folder using Python’s ```venv``` module (optional), and finally install all necessary dependencies using ```pip install -r requirements.txt```
 
 
 ## Potential Difficulties/Future Steps
