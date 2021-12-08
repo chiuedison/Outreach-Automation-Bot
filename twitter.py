@@ -43,20 +43,24 @@ class TwitterBot():
             return
 
         attempt_num = user['fields']['Number of attempts']
-        # Check if influencer has opted out
+        # Check if influencer has opted out or expressed interest in GFL
         if (attempt_num > 0):
             try:
                 if (user['fields']['Opt-out']):
-                    print("Opted out")
                     return
             except KeyError:
                 pass
             messages = self.twitter_api.get_direct_messages()
             for message in messages:
-                if (message._json['message_create']['sender_id'] == user['fields']['recipient_id'] and message._json['message_create']['message_data']['text'] == 'Opt-out'):
-                    self.influencers_table.update(
-                        user['id'], {'Opt-out': True})
-                    return
+                if (message._json['message_create']['sender_id'] == user['fields']['recipient_id']):
+                    if (message._json['message_create']['message_data']['text'] == 'Opt-out'):
+                        self.influencers_table.update(
+                            user['id'], {'Opt-out': True})
+                        return
+                    elif (message._json['message_create']['message_data']['text'] == 'I want to partner'):
+                        self.influencers_table.update(
+                            user['id'], {'Expressed interest': True})
+                        return
 
         if (attempt_num >= self.params['Number of messages']):
             # We already sent the max number of messages
@@ -102,7 +106,7 @@ class TwitterBot():
                 "description": "Choose this option if you want to stop receiving messages from GFL",
             },
             {
-                "label": "I want to learn more",
+                "label": "I want to partner",
                 "description": "Choose this option to speak to a GFL representative",
             },
         ]
