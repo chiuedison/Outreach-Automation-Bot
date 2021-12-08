@@ -61,6 +61,11 @@ class TwitterBot():
                         self.influencers_table.update(
                             user['id'], {'Expressed interest': True})
                         return
+            try:
+                if (user['fields']['Expressed interest']):
+                    return
+            except KeyError:
+                pass
 
         if (attempt_num >= self.params['Number of messages']):
             # We already sent the max number of messages
