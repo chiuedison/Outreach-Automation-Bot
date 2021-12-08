@@ -58,6 +58,9 @@ urllib3==1.26.7
 ### Local Development
 In order to run this code locally, clone this repository using ```git clone``` command, then create a virtual environment in the same folder using Python’s ```venv``` module (optional), and finally install all necessary dependencies using ```pip install -r requirements.txt```
 
+### Hosting the Script
+Right now, the script is hosted on the platform called [WayScript](https://wayscript.com). Unfortunately, there is no integration between GitHub and WayScript, so to change code that is running in the cloud, you will need to log into WayScript and edit ```twitter.py``` file there. It has a decent editor, so it shouldn't be a problem. You can also change how frequently the script runs (don't confuse with the frequency of messages) there. If want to change environmental variables and/or API keys, you will also need to change them on WayScript in the respective files.
+
 
 ## Potential Difficulties/Future Steps
  - Users with DMs blocked will not receive messages. However, this will be indicated in the Airtable and GFL can manually reach out or use another platform.
