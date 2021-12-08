@@ -1,13 +1,46 @@
 # Games For Love - Tech Code Repository
-### Getting Started
-Please look through GitHub's documentation for help on how to create/manage Git commits and pushes.  
-Feel free to reach out Edison or any other 180DC member if you ever run into any unexpected errors with Git!  
 
-**Always make sure to pull before making any changes, in case another analyst has committed new changes.**  
+## Overview
+This is the code for to run an automated outreach bot on Twitter. The rest of this documention will cover various features, code breakdown, and future steps.
 
-### Resources
-Refer to the [Resources Document](https://docs.google.com/document/d/1TUYL9gFffJLFfMNC2tfJ-rADJZikAS7cbNSftfyJbmE/edit) in the 180DC project folder for links and notes on specific APIs and services we will be using.  
-All other resources will also be in this folder, including workstreams, meeting minutes, and the Statement of Work.
+## Airtable Data
 
-### Support
-Programming may be very frustrating at times, so always remember that there are other members on the team who are more than willing to help. Please text, email, or call me if you would like a 1-on-1 session, whether it be for debugging, understanding specific technologies, or general help!
+The script depends on the name and format of the Twitch Top 400- Ranked & Scored table. If you want to rename the table, change the corresponding variable in the .env file (variable ```INFLUENCERS_TABLE_NAME```).
+
+Do NOT change the names and the format of the following fields:
+- Name
+- Twitter Handle (Twitter handle of streamer)
+- Ranking (compatibility ranking of 0-4) 
+- Twitter DM blocked? (whether the streamers DM’s are off)
+- Last Twitter message attempt (when the last message was sent to streamer)
+- Number of attempts (number of messages sent so far)
+- Errors (any errors that occur when running system)
+
+## Code Overview
+
+### twitter.py
+Purpose: Send messages to streamers through twitter in mass
+
+Takes data inputed to the airtable and uses information to deliver message
+### main.py
+Purpose: update the airtable after DM is sent
+
+### Code Setup Requirements
+```
+certifi==2021.10.8
+charset-normalizer==2.0.7
+idna==3.3
+oauthlib==3.1.1
+pyairtable==1.0.0.post1
+python-dotenv==0.19.1
+requests==2.26.0
+requests-oauthlib==1.3.0
+tweepy==4.3.0
+urllib3==1.26.7
+```
+
+### POTENTIAL DIFFICULTIES/FUTURE STEPS
+#Users with DMs blocked will not receive messages
+#Hosting the service has limitations
+#There are opportunities to expand this bot to utilize other outreach platforms such as twitch and discord.
+#There are opportunities to expand the functionality of the twitter bot.
