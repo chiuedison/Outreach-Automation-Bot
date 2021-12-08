@@ -5,7 +5,7 @@ This is the code for to run an automated outreach bot on Twitter. The rest of th
 
 ## Airtable Data
 
-The script depends on the name and format of the Twitch Top 400- Ranked & Scored table. If you want to rename the table, change the corresponding variable in the .env file (variable ```INFLUENCERS_TABLE_NAME```).
+The script depends on the name and format of the ```Twitch Top 400- Ranked & Scored``` table. If you want to rename the table, change the corresponding variable in the .env file (variable ```INFLUENCERS_TABLE_NAME```).
 
 Do NOT change the names and the format of the following fields:
 - Name
@@ -15,6 +15,9 @@ Do NOT change the names and the format of the following fields:
 - Last Twitter message attempt (when the last message was sent to streamer)
 - Number of attempts (number of messages sent so far)
 - Errors (any errors that occur when running system)
+
+### Modifying Outreach Messages
+The ```Twitter Bot Parameters``` table, there are options to change the number of messages to send, the frequency, and the content of each message itself. It is suggested to insert any new code parameters/variable into this specific table, to keep all parameters in one place.
 
 ## Code Overview
 
