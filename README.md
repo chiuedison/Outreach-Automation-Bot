@@ -26,7 +26,10 @@ The ```Twitter Bot Parameters``` table, there are options to change the number o
 ## Code Overview
 
 ### Key Features
-Lorem ipsum
+ - Can continuously update database
+ - Actively configurable paramters (number of messages, etc.)
+ - Opt-in feature
+ - Fully automated
 
 ### Files
 #### twitter.py
