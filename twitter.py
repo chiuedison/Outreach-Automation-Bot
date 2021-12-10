@@ -17,6 +17,7 @@ class TwitterBot():
             os.getenv('BASE_ID'), os.getenv('INFLUENCERS_TABLE_NAME'))
         self.params = self.get_params(
             os.getenv('BASE_ID'), os.getenv('PARAM_TABLE_NAME'))
+        self.messages_sent = 0
 
     def create_twitter_api(self):
         ''' Creates and authenticates Twitter API'''
@@ -127,6 +128,7 @@ class TwitterBot():
                 user['id'], {'Twitter DM blocked?': 'No'})
             self.influencers_table.update(user['id'], {'Last Twitter messages attempt': date.today().strftime(
                 "%m/%d/%Y")})
+            self.messages_sent += 1
         except tweepy.errors.Forbidden:
             self.influencers_table.update(
                 user['id'], {'Twitter DM blocked?': 'Yes'})
@@ -141,6 +143,8 @@ class TwitterBot():
         for user in users:
             if (user['fields']['Twitter Handle'] == '@pashakhomchenko'):
                 self.send_dm(user)
+                if (messages_sent >= self.params['Number of messages']):
+                    return
 
 
 bot = TwitterBot()
