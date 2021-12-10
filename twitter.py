@@ -141,10 +141,9 @@ class TwitterBot():
         # Get all users from Airtable
         users = self.influencers_table.all()
         for user in users:
-            if (user['fields']['Twitter Handle'] == '@pashakhomchenko'):
-                self.send_dm(user)
-                if (messages_sent >= self.params['Message limit']):
-                    return
+            self.send_dm(user)
+            if (self.messages_sent >= self.params['Message limit']):
+                return
 
 
 bot = TwitterBot()
