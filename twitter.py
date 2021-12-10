@@ -143,7 +143,7 @@ class TwitterBot():
         for user in users:
             if (user['fields']['Twitter Handle'] == '@pashakhomchenko'):
                 self.send_dm(user)
-                if (messages_sent >= self.params['Number of messages']):
+                if (messages_sent >= self.params['Message limit']):
                     return
 
 
